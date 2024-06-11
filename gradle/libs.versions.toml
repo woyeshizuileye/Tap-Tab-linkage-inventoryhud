@@ -1,7 +1,7 @@
 [versions]
 maven-group = "band.kessokuteatime"
 archives-name = "taptab"
-mod = "3.3.0"
+mod = "3.3.1"
 loader = "fabric"
 
 minecraft = "1.20"

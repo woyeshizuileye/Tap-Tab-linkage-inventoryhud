@@ -19,7 +19,8 @@ import org.slf4j.LoggerFactory;
 public class TapTab implements ModInitializer {
 	public static final String NAME = "Tap Tab", ID = "taptab";
 	public static final Logger LOGGER = LoggerFactory.getLogger(ID);
-	public static final int TAB_DELAY = 400, ANIMATION_DURATION = 375, ANIMATION_AMOUNT = 35, ANIMATION_DELAY = 15;
+	public static final int TAB_DELAY = 400, ANIMATION_DURATION = 375, ANIMATION_DELAY = 15;
+	public static boolean cycleKeyPressed = false;
 
 	public static final KeyBinding CYCLE = KeyBindingHelper.registerKeyBinding(new TooltipKeyBinding(
 			"key." + ID + ".cycle",
@@ -58,7 +59,10 @@ public class TapTab implements ModInitializer {
 		static void listenInput(MinecraftClient client) {
 			if (client.player == null) return;
 
-			if (keyOrDefault(CYCLE, client.options.playerListKey).wasPressed()) {
+			if (keyOrDefault(CYCLE, client.options.playerListKey).isPressed()) {
+				cycleKeyPressed = true;
+			} else if (cycleKeyPressed && !keyOrDefault(CYCLE, client.options.playerListKey).isPressed()) {
+				cycleKeyPressed = false;
 				if (System.currentTimeMillis() - lastPressed < TAB_DELAY) {
 					boolean reverseModifier = keyOrDefault(REVERSE_MODIFIER, client.options.sneakKey).isPressed();
 					boolean slotModifier = SLOT_MODIFIER.isPressed();
@@ -72,7 +76,6 @@ public class TapTab implements ModInitializer {
 						else InventorySwapper.swapToNextLine();
 					}
 				}
-
 				lastPressed = System.currentTimeMillis();
 			}
 		}
@@ -94,7 +97,7 @@ public class TapTab implements ModInitializer {
 		Sounds.register();
 	}
 
-	private static double easeOutBounceProgress(double progress) {
+	public static double easeOutBounceProgress(double progress) {
 		if (progress < 1 / 2.75) {
 			return 7.5625 * progress * progress;
 		} else if (progress < 2 / 2.75) {
@@ -108,8 +111,8 @@ public class TapTab implements ModInitializer {
 			return 7.5625 * progress * progress + 0.984375;
 		}
 	}
-
 	public static double easeOutBounce(double progress, boolean reversed) {
-		return (easeOutBounceProgress(progress) - 1) * (reversed ? -1 : 1) * ANIMATION_AMOUNT;
+		return (TapTab.easeOutBounceProgress(progress) - 1) * (reversed ? -1 : 1);
 	}
+
 }

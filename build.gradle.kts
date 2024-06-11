@@ -1,3 +1,5 @@
+import org.gradle.launcher.daemon.configuration.DaemonBuildOptions.JvmArgsOption
+
 class Display {
 	lateinit var name: String
 	lateinit var loader: String
@@ -34,6 +36,7 @@ dependencies {
 	minecraft(libs.minecraft)
 	mappings(libs.yarn)
 	modImplementation(libs.bundles.fabric)
+	implementation("com.google.code.gson:gson:2.8.9")
 }
 
 java {
@@ -98,4 +101,14 @@ publisher {
 	addAdditionalFile(tasks.remapSourcesJar)
 
 	changelog.set(file("CHANGELOG.md"))
+}
+
+afterEvaluate {
+	configurations.getByName("runtimeClasspath").forEach { file ->
+		if (file.name.startsWith("sponge-mixin")) {
+			tasks.named<JavaExec>("runClient") {
+				jvmArgs("-javaagent:${file.absolutePath}")
+			}
+		}
+	}
 }

@@ -26,11 +26,11 @@ public class InventorySwapper {
 
 		if (inv.selectedSlot < slot) {
 			for (int i = inv.selectedSlot; i < slot; i++) {
-				if (!inv.getStack(i).isEmpty()) start++;
+				start++;
 			}
 		} else if (inv.selectedSlot > slot) {
 			for (int i = slot; i < inv.selectedSlot; i++) {
-				if (!inv.getStack(i).isEmpty()) start++;
+				start++;
 			}
 		}
 
@@ -51,7 +51,7 @@ public class InventorySwapper {
 		interactionManager.clickSlot(player.playerScreenHandler.syncId, slot, hotbarSlot, SlotActionType.SWAP, player);
 
 		PlayerInventory inv = player.getInventory();
-		if (!hotbarStack.isEmpty()) HOTBAR_SLOTS_ANIMATION_START[hotbarSlot] = getAnimationStart(inv, hotbarSlot);
+		HOTBAR_SLOTS_ANIMATION_START[hotbarSlot] = getAnimationStart(inv, hotbarSlot);
 	}
 
 	private static void swapSlotWithHotbar(
